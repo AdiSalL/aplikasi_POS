@@ -1,0 +1,36 @@
+version: "3.8"
+# docker run --name myXampp -p 41061:22 -p 41062:80 -d -v ~/my_web_pages:/www tomsik68/xampp:8
+
+services:
+  web:
+    image: tomsik68/xampp:8
+    container_name: template-app
+    volumes:
+      - .:/www
+    ports:
+      - 8000:80
+
+  db:
+    image: mysql:5.7
+    container_name: penjualan-pos-database
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    volumes:
+      - db-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: db_aplikasi_penjualan
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
